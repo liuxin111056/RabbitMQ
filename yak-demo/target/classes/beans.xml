@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans default-lazy-init="false" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:jms="http://www.springframework.org/schema/jms"
+	xsi:schemaLocation="http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.1.xsd
+		http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms-3.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+
+	<!-- 广播模式：发布者 -->
+<!-- 	<import resource="rabbitmq-fanout-publisher.xml" /> -->
+	<!-- 广播模式：订阅者 -->
+<!-- 	<import resource="rabbitmq-fanout-subscriber.xml" /> -->
+	<!-- Topic模式：发送端 -->
+	<import resource="rabbitmq-topic-send.xml" />
+
+<!-- 	<import resource="static-factory-demo.xml" /> -->
+<!-- 	<import resource="static-factory-demo1.xml" /> -->
+<!-- 	<import resource="instance-factory-demo1.xml" /> -->
+<!-- 	<import resource="socket-context.xml" /> -->
+<!-- 	<import resource="constructor-arg-demo.xml" /> -->
+</beans>

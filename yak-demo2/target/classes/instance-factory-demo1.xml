@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- 这里使用factory-bean指定实例工厂类对象 -->
+	<bean id="cat" factory-bean="animalFactory" factory-method="getAnimal">
+		<!-- 同样指定factory-method的参数 -->
+		<constructor-arg value="cat" />
+		<property name="msg" value="猫猫" />
+	</bean>
+
+	<bean id="dog" factory-bean="animalFactory" factory-method="getAnimal">
+		<constructor-arg value="dog" />
+		<property name="msg" value="狗狗" />
+	</bean>
+
+	<!-- 先配置工厂类 -->
+	<bean id="animalFactory" class="com.springioc.instancefactory.demo.AnimalFactory" />
+
+</beans>  

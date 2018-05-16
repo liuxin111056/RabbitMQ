@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:aop="http://www.springframework.org/schema/aop" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+    http://www.springframework.org/schema/rabbit
+    http://www.springframework.org/schema/rabbit/spring-rabbit-1.0.xsd
+    http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+
+    <!-- 连接服务配置 -->
+    <rabbit:connection-factory id="connectionFactory"
+        host="${rabbitmq.host}" port="${rabbitmq.port}" username="${rabbitmq.username}"
+        password="${rabbitmq.password}" channel-cache-size="${rabbitmq.channel.cache.size}" />
+
+    <!-- 创建rabbitAdmin 代理类 -->
+    <rabbit:admin connection-factory="connectionFactory" />
+    
+    <rabbit:queue id="queue_consumer_appoint_employee" name="${rabbitmq.consumer.appoint.employee.notice.queue}" durable="true"
+        auto-delete="false" exclusive="false" />
+       
+    <rabbit:queue id="queue_cashier_order_comission" name="${rabbitmq.selfcashier.order.comission.queue}" durable="true"
+        auto-delete="false" exclusive="false" />
+         
+    <!--路由设置 将队列绑定，属于direct类型 -->
+    <rabbit:direct-exchange id="directExchange"
+        name="directExchange" durable="true" auto-delete="false">
+        <rabbit:bindings>
+            <rabbit:binding queue="queue_consumer_appoint_employee" key="${rabbitmq.consumer.appoint.employee.notice.queue}" />
+            <rabbit:binding queue="queue_cashier_order_comission" key="${rabbitmq.selfcashier.order.comission.queue}"></rabbit:binding>
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
+    
+    <bean id="ackManual"
+        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+        <property name="staticField"
+            value="org.springframework.amqp.core.AcknowledgeMode.MANUAL" />
+    </bean>
+
+    <!-- 员工指定服务通知 -->
+    <bean
+        class="org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer">
+        <property name="connectionFactory" ref="connectionFactory" />
+        <!-- <property name="acknowledgeMode" ref="ackManual" /> -->
+        <property name="queueNames" value="${rabbitmq.consumer.appoint.employee.notice.queue}" />
+        <property name="messageListener">
+            <bean class="com.zefun.api.listener.AppointEmployeeNoitceCoupon" />
+        </property>
+        <property name="concurrentConsumers" value="${rabbitmq.concurrentConsumers}" />
+        <!-- <property name="channelTransacted" value="true"/> -->
+        <property name="adviceChain" ref="retryOperationsInterceptorFactoryBean" />
+        <property name="errorHandler" ref="mqErrorHandler" />
+    </bean>
+    
+    <!-- 自助收银结算员工的提成 -->
+    <bean class="org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer">
+        <property name="connectionFactory" ref="connectionFactory" />
+        <property name="acknowledgeMode" ref="ackManual" />
+        <property name="queueNames" value="${rabbitmq.selfcashier.order.comission.queue}" />
+        <property name="messageListener">
+            <bean class="com.zefun.api.listener.CashierOrderCommission" />
+        </property>
+        <property name="concurrentConsumers" value="${rabbitmq.concurrentConsumers}" />
+        <!-- <property name="channelTransacted" value="true"/> -->
+        <property name="adviceChain" ref="retryOperationsInterceptorFactoryBean" />
+        <property name="errorHandler" ref="mqErrorHandler" />
+    </bean>
+    
+    <bean id="mqErrorHandler" class="com.zefun.api.utils.MQErrorHandler"/>
+    
+	<bean id="retryOperationsInterceptorFactoryBean"
+	    class="org.springframework.amqp.rabbit.config.StatelessRetryOperationsInterceptorFactoryBean">
+	    <property name="messageRecoverer">
+	        <bean class="com.zefun.api.utils.MQRepublishMessageRecoverer"/>
+	    </property>
+	    <property name="retryOperations">
+	        <bean class="org.springframework.retry.support.RetryTemplate">
+	            <property name="backOffPolicy">
+	                <bean
+	                    class="org.springframework.retry.backoff.ExponentialBackOffPolicy">
+	                    <property name="initialInterval" value="500" />
+	                    <property name="multiplier" value="10.0" />
+	                    <property name="maxInterval" value="10000" />
+	                </bean>
+	            </property>
+	        </bean>
+	    </property>
+	</bean>
+    
+    <bean id="msgConverter" class="org.springframework.amqp.support.converter.SimpleMessageConverter" />
+
+    <rabbit:template id="amqpTemplate" connection-factory="connectionFactory"/>
+    
+</beans>

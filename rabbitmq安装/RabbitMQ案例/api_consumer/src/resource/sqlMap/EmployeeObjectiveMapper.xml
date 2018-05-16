@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zefun.api.mapper.EmployeeObjectiveMapper" >
+  <resultMap id="BaseResultMap" type="com.zefun.api.entity.EmployeeObjective" >
+    <id column="objective_id" property="objectiveId" jdbcType="INTEGER" />
+    <result column="employee_id" property="employeeId" jdbcType="INTEGER" />
+    <result column="total_project_sales" property="totalProjectSales" jdbcType="DECIMAL" />
+    <result column="actual_total_project_sales" property="actualTotalProjectSales" jdbcType="DECIMAL" />
+    <result column="assign_project_sales" property="assignProjectSales" jdbcType="DECIMAL" />
+    <result column="actual_assign_project_sales" property="actualAssignProjectSales" jdbcType="DECIMAL" />
+    <result column="combo_sales" property="comboSales" jdbcType="DECIMAL" />
+    <result column="actual_combo_sales" property="actualComboSales" jdbcType="DECIMAL" />
+    <result column="goods_sales" property="goodsSales" jdbcType="DECIMAL" />
+    <result column="actual_goods_sales" property="actualGoodsSales" jdbcType="DECIMAL" />
+    <result column="charge_sales" property="chargeSales" jdbcType="DECIMAL" />
+    <result column="actual_charge_sales" property="actualChargeSales" jdbcType="DECIMAL" />
+    <result column="objective_month" property="objectiveMonth" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="CHAR" />
+    <result column="update_time" property="updateTime" jdbcType="CHAR" />
+    <result column="last_operator_id" property="lastOperatorId" jdbcType="INTEGER" />
+  </resultMap>
+
+  
+  <update id="updateActual" parameterType="com.zefun.api.entity.EmployeeObjective" >
+    update employee_objective
+    <set >
+      <if test="actualTotalProjectSales != null" >
+        actual_total_project_sales = actual_total_project_sales + #{actualTotalProjectSales,jdbcType=DECIMAL},
+      </if>
+      <if test="actualAssignProjectSales != null" >
+       actual_assign_project_sales = actual_assign_project_sales + #{actualAssignProjectSales,jdbcType=DECIMAL},
+      </if>
+      <if test="actualComboSales != null" >
+        actual_combo_sales = actual_combo_sales + #{actualComboSales,jdbcType=DECIMAL},
+      </if>
+      <if test="actualGoodsSales != null" >
+        actual_goods_sales = actual_goods_sales + #{actualGoodsSales,jdbcType=DECIMAL},
+      </if>
+      <if test="actualChargeSales != null" >
+        actual_charge_sales = actual_charge_sales + #{actualChargeSales,jdbcType=DECIMAL},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime},
+      </if>
+    </set>
+    where employee_id = #{employeeId,jdbcType=INTEGER} and objective_month = #{objectiveMonth}
+  </update>
+  
+  
+  <select id="selectByCommonCalculate" resultType="java.math.BigDecimal" parameterType="java.lang.Integer" >
+    select 
+        a.step_performance 
+    from project_step a
+    where 
+       exists(
+              select 
+                  1 
+              from shift_mahjong_project_step b 
+              where 
+                 a.project_step_id = b.project_step_id 
+                 and b.shift_mahjong_step_id = #{shiftMahjongStepId,jdbcType=INTEGER} 
+                 and b.is_deleted = 0
+             )
+       and a.is_deleted = 0
+  </select>
+  
+  <select id="selectByComboCommonCalculate" resultType="java.math.BigDecimal" parameterType="java.util.Map" >
+    select 
+        a.combo_performance_cal as comboPerformanceCal
+    from combo_project a
+    where 
+       a.combo_id = #{comboId,jdbcType=INTEGER}
+       and a.project_id = #{projectId,jdbcType=INTEGER}
+  </select>
+  
+  <!-- 查询该员工在同一个明细中步骤个数 -->
+  <select id="selectCount" resultType="java.lang.Integer" parameterType="java.util.Map" >
+    select count(*) from employee_commission where detail_id = #{detailId,jdbcType=INTEGER} and employee_id = #{employeeId,jdbcType=INTEGER} and is_deleted = 0
+  </select>
+  
+  <select id="selectAllStore" resultType="java.lang.Integer">
+    select store_id from store_info where store_type in (1,3)
+  </select>
+  
+   <select id="selectStoreSetting" parameterType="java.lang.Integer" resultType="java.util.Map">
+     select cost_commission_type as costCommissionType, gift_commission_rate as giftCommissionRate, coupon_commission_rate as couponCommissionRate from store_setting where store_id = #{storeId}
+   </select>
+   
+   <select id="getRecommendlist" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+       select employee_id from employee_info where store_id = #{storeId} and is_deleted=0 and dept_id>0
+   </select>
+   
+   <!-- 批量保存 -->
+  <insert id="insertByList" parameterType="java.util.List">
+  	 insert into employee_objective (employee_id, objective_month, create_time) values
+  	<foreach collection="list" item="item" index="index"
+  		separator=",">
+  		(#{item.employeeId,jdbcType=INTEGER}, #{item.objectiveMonth,jdbcType=VARCHAR}, #{item.createTime,jdbcType=VARCHAR})
+  	</foreach>
+  </insert>
+  
+  <delete id="deleteByStoreId" parameterType="java.util.Map" >
+    delete from employee_objective
+    where 
+       exists(select 1 from employee_info b where b.employee_id = employee_objective.employee_id and b.store_id = #{storeId,jdbcType=INTEGER}) 
+       and objective_month = #{objectiveMonth,jdbcType=VARCHAR}
+  </delete>
+  
+  <update id="updateGiftmoneyAll" parameterType = "java.lang.String">
+    update member_account set total_giftmoney_amount = total_giftmoney_amount + (select ifnull(sum(now_money), 0) from giftmoney_detail a where a.account_id = member_account.account_id and a.start_date = #{startDate,jdbcType=VARCHAR} and a.is_deleted = 0),
+    balance_giftmoney_amount = balance_giftmoney_amount + (select ifnull(sum(now_money), 0) from giftmoney_detail a where a.account_id = member_account.account_id and a.start_date = #{startDate,jdbcType=VARCHAR} and a.is_deleted = 0)
+  </update>
+  
+  <update id="deleteGiftmoneyDetail" parameterType = "java.lang.String">
+    update giftmoney_detail set is_deleted = 0 where start_date = #{startDate,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="updatePastdataGiftmoneyDetail" parameterType = "java.lang.String">
+    update member_account set pastdata_money = pastdata_money + (select ifnull(sum(now_money), 0) from giftmoney_detail a where a.account_id = member_account.account_id and a.end_date = #{endDate,jdbcType=VARCHAR}),
+    balance_giftmoney_amount = balance_giftmoney_amount - (select ifnull(sum(now_money), 0) from giftmoney_detail a where a.account_id = member_account.account_id and a.end_date = #{endDate,jdbcType=VARCHAR})
+  </update>
+</mapper>

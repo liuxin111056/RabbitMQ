@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zefun.api.mapper.OrderDetailMapper" >
+
+  <resultMap id="OrderDetailMap" type="com.zefun.api.dto.CashierOrderDetailDto">
+    <result column="detail_id" property="detailId" jdbcType="INTEGER" />
+    <result column="shift_mahjong_step_id" property="shiftMahjongStepId" jdbcType="INTEGER" />
+    <result column="combo_id" property="comboId" jdbcType="INTEGER" />
+    <result column="member_id" property="memberId" jdbcType="INTEGER" />
+  	<result column="order_type" property="orderType" jdbcType="INTEGER" />
+  	<result column="project_id" property="projectId" jdbcType="INTEGER" />
+  	<result column="project_count" property="projectCount" jdbcType="INTEGER" />
+  	<result column="last_operator_id" property="lastOperatorId" jdbcType="INTEGER" />
+  	<result column="employee_id" property="employeeId" jdbcType="INTEGER" />
+  	<result column="last_operator_id" property="lastOperatorId" jdbcType="INTEGER" />
+  	<result column="is_assign" property="isAssign" jdbcType="INTEGER" />
+  	<result column="is_appoint" property="isAppoint" jdbcType="INTEGER" />
+  	<result column="level_id" property="levelId" jdbcType="INTEGER" />
+  </resultMap>
+
+  <select id="selectOrderDetailByOrderId" parameterType="java.lang.Integer" resultMap="OrderDetailMap">
+	select a.detail_id as detailId, b.shift_mahjong_step_id as shiftMahjongStepId, a.combo_id as comboId, null as memberId, a.order_type as orderType, a.project_id as projectId, a.project_count as projectCount, 
+	a.last_operator_id as lastOperatorId, b.employee_id as employeeId, b.is_assign as isAssign, b.is_appoint as isAppoint, c.level_id as levelId
+	  	  from order_detail a
+	  		LEFT JOIN shift_mahjong_project_step b on (a.detail_id = b.detail_id)
+			LEFT JOIN employee_info c on (b.employee_id = c.employee_id)
+		  where
+		    a.order_id = #{orderId,jdbcType=INTEGER} and a.order_type = 1 and b.is_deleted = 0 and c.is_deleted = 0
+		    and b.is_over = 3
+	union
+	select a.detail_id as detailId, null as shiftMahjongStepId, null as comboId, b.member_id as memberId, a.order_type as orderType, a.project_id as projectId, a.project_count as projectCount, 
+	a.last_operator_id as lastOperatorId, null as employeeId, null as isAssign, null as isAppoint, null as levelId
+	  	  from order_detail a
+	  	  LEFT JOIN order_info b on (a.order_id = b.order_id)
+		  where
+		    a.order_id = #{orderId,jdbcType=INTEGER} and a.order_type in (2,3) and b.is_deleted = 0
+  </select>
+
+  <!-- 项目提成信息 -->
+  <select id="selectProjectCommissionInfo" parameterType="java.util.Map" resultType="com.zefun.api.dto.CashierCommissionDto">
+  	select a.project_id as projectId, a.performance_calculate as commonCalculate,
+  		a.sales_count as salesCount,  a.sales_people as salesPeople, a.groupbuy_results as groupCalculate, a.cost_price as costPrice,
+  		b.appointment_reward_type as appointmentRewardType, b.appointment_reward as appointmentReward,
+  		<choose>
+  			<when test="isAssign == 1">
+  				b.assign_cash_type as commissionType, b.assign_cash as commissionAmount
+  			</when>
+  			<otherwise>
+  				b.non_assign_cash_type as commissionType, b.non_assign_cash as commissionAmount
+  			</otherwise>
+  		</choose>
+  	  from project_info a
+  		  LEFT JOIN project_commission b on (a.project_id = b.project_id)
+	    where a.project_id = #{projectId,jdbcType=INTEGER} and b.project_id = #{projectId,jdbcType=INTEGER} 
+	    and b.level_id = #{levelId,jdbcType=INTEGER} and b.shift_mahjong_id = #{shiftMahjongId,jdbcType=INTEGER}
+	    and a.is_deleted = 0 and b.is_deleted = 0
+  </select>
+  
+  <!--  根据轮牌步骤查询轮牌标识 -->
+  <select id="selectByShiftMahjongStepId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+  	select 
+  	  a.shift_mahjong_id as shiftMahjongId
+  	from project_step a
+	    where exists(select 1 from shift_mahjong_project_step b where b.shift_mahjong_step_id = #{shiftMahjongStepId,jdbcType=INTEGER} and a.project_step_id = b.project_step_id and b.is_deleted = 0)
+	    and a.is_deleted = 0
+  </select>
+  
+  <select id="selectByDetailId" parameterType="java.lang.Integer" resultType="com.zefun.api.entity.OrderDetail">
+  	select 
+  	  detail_id detailId, detail_code detailCode, order_id orderId, order_type orderType, is_appoint isAppoint, appoint_off appointOff, is_assign isAssign, project_id projectId, 
+    project_name projectName, project_price projectPrice, project_count projectCount, project_image projectImage, real_price realPrice, discount_amount discountAmount,
+    combo_id comboId, coupon_id couponId, gift_amount giftAmount, service_length serviceLength, store_id storeId, order_status orderStatus, 
+    is_deleted isDeleted, create_time createTime, update_time updateTime, last_operator_id lastOperatorId
+  	from order_detail
+	    where detail_id = #{detailId,jdbcType=INTEGER}
+  </select>
+  
+  <!-- 商品提成信息 -->
+  <select id="selectGoodsCommissionInfo" parameterType="java.util.Map" resultType="com.zefun.api.dto.CashierCommissionDto">
+  	select goods_id as goodsId, online_shopping_price as commonCalculate,
+  		commission_type as commissionType, ifnull(commission_amount,0) as commissionAmount, ifnull(sales_count,0) as salesCount,
+  		sales_people as salesPeople, cost_price as costPrice
+  	  from goods_info where goods_id = #{projectId,jdbcType=INTEGER}
+  </select>
+  
+  <!-- 套餐提成信息 -->
+  <select id="selectComboCommissionInfo" parameterType="java.util.Map" resultType="com.zefun.api.dto.CashierCommissionDto">
+  	select combo_id as comboId, combo_performance as commonCalculate, commission_type as commissionType,
+  		ifnull(cash_commission,0) as commissionAmount, ifnull(sales_count,0) as salesCount, ifnull(sales_people,0) as salesPeople, 0 as costPrice
+  	  from combo_info where combo_id = #{projectId,jdbcType=INTEGER}
+  </select>
+  
+  <update id="updateProjectSalesInfo" parameterType="java.util.Map">
+  	update project_info set
+  		sales_count = (sales_count + #{projectCount,jdbcType=INTEGER}),
+  		sales_people = (sales_people + #{projectPeople,jdbcType=INTEGER})
+  	  where project_id = #{projectId,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateGoodsSalesInfo" parameterType="java.util.Map">
+  	update goods_info set goods_stock = 
+  		  case when ifnull(goods_stock,0) > #{goodsCount,jdbcType=INTEGER}
+  			  then (goods_stock - #{goodsCount,jdbcType=INTEGER})
+  		  else 0 end,
+  		sales_count = (sales_count + #{goodsCount,jdbcType=INTEGER}),
+  		sales_people = (sales_people + #{goodsPeople,jdbcType=INTEGER})
+  	  where goods_id = #{goodsId,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateComboSalesInfo" parameterType="java.util.Map">
+  	update combo_info set 
+  		sales_count = (sales_count + #{comboCount,jdbcType=INTEGER}),
+  		sales_people = (sales_people + #{comboPeople,jdbcType=INTEGER})
+  	  where combo_id = #{comboId,jdbcType=INTEGER}
+  </update>
+  
+  <insert id="insertEmployeeCommission" parameterType="com.zefun.api.entity.EmployeeCommission" useGeneratedKeys = "true" keyProperty="orderId">
+  	insert into employee_commission(detail_id, shift_mahjong_step_id, order_type, employee_id, commission_calculate, commission_amount, charge_time)
+  		values (
+  			#{detailId,jdbcType=INTEGER},
+  			#{shiftMahjongStepId,jdbcType=INTEGER},
+  			#{orderType,jdbcType=INTEGER},
+  			#{employeeId,jdbcType=INTEGER},
+  			#{commissionCalculate,jdbcType=DECIMAL},
+  			#{commissionAmount,jdbcType=DECIMAL},
+  			#{chargeTime,jdbcType=CHAR}
+  		)
+  </insert>
+  
+  <insert id="insertMemberComboRecord" parameterType="java.util.Map" useGeneratedKeys = "true" keyProperty="recordId">
+  	insert into member_combo_record
+		(member_id, combo_id, store_id, combo_name, combo_price, combo_image, project_amount, 
+	    	project_count, remaining_count, overdue_time, create_time, update_time, last_operator_id)
+	  select #{memberId,jdbcType=INTEGER}, combo_id, store_id,
+	  	combo_name, a.combo_sale_price, combo_image, project_amount,
+		project_count, project_count, DATE_ADD(sysdate(),INTERVAL a.valid_date DAY), sysdate(), sysdate(), #{employeeId,jdbcType=INTEGER}
+	 from combo_info a
+	 	where combo_id = #{comboId,jdbcType=INTEGER}
+  </insert>
+  
+  <insert id="insertMemberComboProject" parameterType="java.util.Map" useGeneratedKeys = "true" keyProperty="recordId">
+  	insert into member_combo_project
+		(record_id, combo_id, project_id, project_name, project_price, project_image, project_count, 
+		    remaining_count, create_time, update_time, last_operator_id)
+	  select #{recordId,jdbcType=INTEGER}, combo_id, project_id, project_name, project_price, project_image, project_count,
+			project_count, sysdate(), sysdate(), #{employeeId,jdbcType=INTEGER}
+		from combo_project
+			where combo_id = #{comboId,jdbcType=INTEGER}
+  </insert>
+  
+  <select id="selectIsAssignStepPerformance" parameterType="java.lang.Integer" resultType="java.util.Map">
+  	  select 
+  	     a.is_assign isAssign, ifnull(b.step_performance, 0) stepPerformance, b.step_performance_type stepPerformanceType,
+  	     (select ifnull(sum(c.step_performance), 0) from project_step c where c.project_id = b.project_id and c.step_performance_type = 2 and c.is_deleted = 0) fixedValue
+  	  from shift_mahjong_project_step a, project_step b 
+  	  where a.shift_mahjong_step_id = #{shiftMahjongStepId,jdbcType=INTEGER} 
+  	    and a.project_step_id = b.project_step_id and b.is_deleted = 0 and a.is_deleted = 0
+  </select>
+  
+  <select id="selectMemberIdByOrderId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+  	select member_id
+  	  from order_info where order_id = #{orderId,jdbcType=INTEGER}
+  </select>
+  
+  <!-- 计算会员单次消费 -->
+  <update id="updateAvgConsume" parameterType="java.lang.Integer">
+  	  update member_account set member_account.avg_consume_amount = IFNULL((select sum(a.receivable_amount)/count(*) from order_info a where member_account.account_id = a.member_id), 0) 
+  	  WHERE member_account.account_id = #{memberId,jdbcType=INTEGER}
+  </update>
+  
+  <!--  计算会员平均消费天数 -->
+  <select id="selectCreateTime" parameterType="java.lang.Integer" resultType="java.lang.String">
+  	select date_format(date(create_time),'%Y-%m-%d')
+  	  from order_info where member_id = #{memberId,jdbcType=INTEGER} order by create_time desc
+  </select>
+  
+  <!-- 修改会员平均消费天数  -->
+  <update id="updateAvgConsumeDays" parameterType="java.util.Map">
+  	  update member_account set avg_consume_days =  #{avgConsumeDays,jdbcType=INTEGER}
+  	  WHERE member_account.account_id = #{memberId,jdbcType=INTEGER}
+  </update>
+</mapper>

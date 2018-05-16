@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- 配置AnimalFactory的getAnimal方法，使之产生Cat -->
+	<bean id="cat" class="com.springioc.staticfactory.demo1.AnimalFactory" factory-method="getAnimal">
+		<!-- 配置静态工厂方法的参数，getAnimal方法将产生Cat类型的对象 -->
+		<constructor-arg value="cat" />
+		<!-- 通过setter注入的普通属性 -->
+		<property name="msg" value="猫猫" />
+	</bean>
+	<!-- 配置AnimalFactory的getAnimal方法，使之产生Dog -->
+	<bean id="dog" class="com.springioc.staticfactory.demo1.AnimalFactory" factory-method="getAnimal">
+		<!-- 配置静态工厂方法的参数，getAnimal方法将产生Dog类型的对象 -->
+		<constructor-arg value="dog" />
+		<!-- 通过setter注入的普通属性 -->
+		<property name="msg" value="狗狗" />
+	</bean>
+</beans>  

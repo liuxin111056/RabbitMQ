@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans     xmlns="http://www.springframework.org/schema/beans"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:p="http://www.springframework.org/schema/p"
+           xmlns:tx="http://www.springframework.org/schema/tx"
+           xmlns:context="http://www.springframework.org/schema/context"
+           xsi:schemaLocation="
+            http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean" lazy-init="false">
+       <property name="triggers">
+           <list>
+              <ref bean="objectiveExpireTrigger"/>
+              <ref bean="giftmoneyDetailJobExpireTrigger"/>
+              <ref bean="employeeAttendanceJobExpireTrigger"/>
+           </list>
+       </property>
+       <property name="autoStartup" value="true"/>
+	</bean>
+
+	<!-- 目标定时每月更新任务 -->
+	<bean id="objectiveExpireTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+       <property name="jobDetail" ref="objectiveDetail"/>
+       <property name="cronExpression" value="0 30 23 L * ?"/><!-- 	每月最后一天的23点30分执行   -->
+	</bean>
+
+	<bean id="objectiveDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="ObjectiveJob"/>
+        <property name="targetMethod" value="execute"/>
+        <property name="concurrent" value="false"/>
+        <!-- 是否允许任务并发执行。当值为false时，表示必须等到前一个线程处理完毕后才再启一个新的线程 -->
+	</bean>
+
+	<bean id="ObjectiveJob" class="com.zefun.api.job.ObjectiveJob" lazy-init="false"/>
+	
+	<!-- 礼金定时每天更新任务 -->
+	<bean id="giftmoneyDetailJobExpireTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+       <property name="jobDetail" ref="giftmoneyDetail"/>
+       <property name="cronExpression" value="0 15 10 ? * *"/><!-- 	每月1号凌晨1：15执行   -->
+	</bean>
+
+	<bean id="giftmoneyDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="giftmoneyJob"/>
+        <property name="targetMethod" value="execute"/>
+        <property name="concurrent" value="false"/>
+        <!-- 是否允许任务并发执行。当值为false时，表示必须等到前一个线程处理完毕后才再启一个新的线程 -->
+	</bean>
+
+	<bean id="giftmoneyJob" class="com.zefun.api.job.GiftmoneyDetailJob" lazy-init="false"/>
+	
+	
+	<!-- 员工考勤每天更新任务 -->
+    <bean id="employeeAttendanceJobExpireTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+       <property name="jobDetail" ref="employeeAttendance"/>
+       <property name="cronExpression" value="0 5 15 ? * *"/><!--  每天23:55分执行   -->
+    </bean>
+
+    <bean id="employeeAttendance" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="employeeAttendanceJob"/>
+        <property name="targetMethod" value="execute"/>
+        <property name="concurrent" value="false"/>
+        <!-- 是否允许任务并发执行。当值为false时，表示必须等到前一个线程处理完毕后才再启一个新的线程 -->
+    </bean>
+
+    <bean id="employeeAttendanceJob" class="com.zefun.api.job.EmployeeAttendanceJob" lazy-init="false"/>
+
+</beans>

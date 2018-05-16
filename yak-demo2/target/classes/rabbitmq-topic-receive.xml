@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans default-lazy-init="false"
+	xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.1.xsd
+		http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit-1.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
+
+	<!-- rabbitMQ配置 -->
+	<bean id="rabbitConnectionFactory"
+		class="org.springframework.amqp.rabbit.connection.CachingConnectionFactory">
+		<constructor-arg value="127.0.0.1" />
+		<property name="username" value="guest" />
+		<property name="password" value="guest" />
+		<property name="channelCacheSize" value="8" />
+		<property name="port" value="5672"></property>
+	</bean>
+	
+	<rabbit:admin connection-factory="rabbitConnectionFactory" />
+	
+	<rabbit:listener-container connection-factory="rabbitConnectionFactory" concurrency="8">
+		<rabbit:listener queues="rdsnfs.rds.notice" ref="nfsQueueConsumer" method="onMessage" />
+		<rabbit:listener queues="rdsnf.rds.notice" ref="fsQueueConsumer" method="onMessage" />
+	</rabbit:listener-container>
+	
+	<!-- 主题： nfs(非金融).rds.notice-->
+	<rabbit:queue name="rdsnfs.rds.notice" durable="true" />
+	<rabbit:queue name="rdsnf.rds.notice" durable="true" />
+
+	<rabbit:topic-exchange name="noticeExchange">
+		<rabbit:bindings>
+			<rabbit:binding queue="rdsnfs.rds.notice" pattern="nfs.*.notice"/>
+			<rabbit:binding queue="rdsnf.rds.notice" pattern="fs.*.notice"/>
+		</rabbit:bindings>
+	</rabbit:topic-exchange>
+	
+	<bean id="nfsQueueConsumer" class="com.rabbitmq.topic.receive.NfsQueueConsumer"></bean>
+	<bean id="fsQueueConsumer" class="com.rabbitmq.topic.receive.FsQueueConsumer"></bean>
+
+
+</beans>

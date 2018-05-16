@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans default-lazy-init="false"
+	xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.1.xsd
+		http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit-1.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
+
+	<!-- rabbitMQ配置 -->
+	<bean id="rabbitConnectionFactory"
+		class="org.springframework.amqp.rabbit.connection.CachingConnectionFactory">
+		<constructor-arg value="192.168.1.13" />
+		<property name="username" value="root" />
+		<property name="password" value="lee2342" />
+		<property name="channelCacheSize" value="8" />
+		<property name="port" value="5672"></property>
+	</bean>
+	<rabbit:admin connection-factory="rabbitConnectionFactory" />
+
+	<rabbit:queue name="test123queue" durable="true" />
+	<rabbit:queue name="test321queue" durable="true" />
+
+	<!-- 该处把需要数据的队列与路由绑定一起，如果手动在控制台绑定就不需要此代码 -->
+	<rabbit:fanout-exchange name="leo.pay.fanout.exchange"
+		xmlns="http://www.springframework.org/schema/rabbit" durable="true">
+		<rabbit:bindings>
+			<rabbit:binding queue="test123queue"></rabbit:binding>
+			<rabbit:binding queue="test321queue"></rabbit:binding>
+		</rabbit:bindings>
+	</rabbit:fanout-exchange>
+
+
+	<bean id="detailQueueConsumer" class="com.leo.website.cousumer.DetailQueueConsumer"></bean>
+	<bean id="testQueueConsumer" class="com.leo.website.cousumer.TestQueueConsumer"></bean>
+
+	<rabbit:listener-container
+		connection-factory="rabbitConnectionFactory" concurrency="8">
+		<rabbit:listener queues="test123queue" ref="detailQueueConsumer"
+			method="onMessage" />
+		<rabbit:listener queues="test321queue" ref="testQueueConsumer"
+			method="onMessage" />
+	</rabbit:listener-container>
+
+</beans>

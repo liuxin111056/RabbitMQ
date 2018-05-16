@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<!-- saved from url=(0051)http://www.cnblogs.com/ericli-ericli/p/5902270.html -->
+<html lang="zh-cn"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>windows下 安装 rabbitMQ 及操作常用命令 - Eric-Lee - 博客园</title>
+<link type="text/css" rel="stylesheet" href="./windows下 安装 rabbitMQ 及操作常用命令 - Eric-Lee - 博客园_files/blog-common.css">
+<link id="MainCss" type="text/css" rel="stylesheet" href="./windows下 安装 rabbitMQ 及操作常用命令 - Eric-Lee - 博客园_files/bundle-kubrick.css">
+<link id="mobile-style" media="only screen and (max-width: 768px)" type="text/css" rel="stylesheet" href="./windows下 安装 rabbitMQ 及操作常用命令 - Eric-Lee - 博客园_files/bundle-kubrick-mobile.css">
+<link title="RSS" type="application/rss+xml" rel="alternate" href="http://www.cnblogs.com/ericli-ericli/rss">
+<link title="RSD" type="application/rsd+xml" rel="EditURI" href="http://www.cnblogs.com/ericli-ericli/rsd.xml">
+<link type="application/wlwmanifest+xml" rel="wlwmanifest" href="http://www.cnblogs.com/ericli-ericli/wlwmanifest.xml">
+<script async="" src="./windows下 安装 rabbitMQ 及操作常用命令 - Eric-Lee - 博客园_files/analytics.js"></script><script type="text/javascript" src="./windows下 安装 rabbitMQ 及操作常用命令 - Eric-Lee - 博客园_files/encoder.js"></script><script src="./windows下 安装 rabbitMQ 及操作常用命令 - Eric-Lee - 博客园_files/jquery.js" type="text/javascript"></script>  
+<script type="text/javascript">var currentBlogApp = 'ericli-ericli', cb_enable_mathjax=false;var isLogined=false;</script>
+<script src="./windows下 安装 rabbitMQ 及操作常用命令 - Eric-Lee - 博客园_files/blog-common.js" type="text/javascript"></script>
+</head>
+<body>
+<a name="top"></a>
+
+<div id="header">
+    
+<h1><a id="Header1_HeaderTitle" class="headermaintitle" href="http://www.cnblogs.com/ericli-ericli/">Eric-Lee</a></h1>
+<p id="tagline">愿所有美好，皆如期而至</p>
+</div>
+<div id="wrapper">
+<div id="main">
+    
+<div id="post_detail">
+	<div class="post">
+		<h2>
+			<a id="cb_post_title_url" href="http://www.cnblogs.com/ericli-ericli/p/5902270.html">windows下 安装 rabbitMQ 及操作常用命令</a>
+		</h2>
+		<div class="postText"><div id="cnblogs_post_body" deep="5"><p>rabbitMQ是一个在AMQP协议标准基础上完整的，可服用的企业消息系统。它遵循Mozilla Public License开源协议，采用 Erlang 实现的工业级的消息队列(MQ)服务器，Rabbit MQ 是建立在Erlang OTP平台上。</p>
+<h2>1.安装<span style="font-size: 18.018px; line-height: 31.5315px;">Erlang</span><span style="font-size: 18.018px; line-height: 31.5315px;">&nbsp;</span></h2>
+<p>所以在安装rabbitMQ之前，需要先安装Erlang 。</p>
+<p>小编使用的是<a href="https://pan.baidu.com/s/1c2826rA" target="_blank">otp_win64_18.1</a>&nbsp;，需要其他版本或者32位系统的，可以去<a href="http://www.erlang.org/downloads" target="_blank">官网</a>下载。</p>
+<p>全部点击“下一步”就行。</p>
+<p>有的选择其他的安装方式，可能需要添加一下系统环境变量（正常安装的也要检查下）：</p>
+<p><img src="./windows下 安装 rabbitMQ 及操作常用命令 - Eric-Lee - 博客园_files/784082-20160923235447637-1807926011.png" alt=""></p>
+<p>有最好，没有的话就手动添加嘛。</p>
+<h2>2.安装<span style="color: #333333; font-family: &#39;Microsoft YaHei&#39;; line-height: 24px;">RabbitMQ</span></h2>
+<p>下载运行<a href="https://pan.baidu.com/s/1cqpG0u" target="_blank">rabbitmq-server-3.6.5</a>&nbsp;，需要其他版本或者32位系统的，可以去<a href="http://www.rabbitmq.com/download.html" target="_blank">官网</a>下载。</p>
+<p>依旧可以不改变默认进行安装。</p>
+<p>需要注意：默认安装的RabbitMQ 监听端口是5672</p>
+<h2>3.配置</h2>
+<h3>激活&nbsp;RabbitMQ's Management Plugin</h3>
+<p>使用RabbitMQ 管理插件，可以更好的可视化方式查看Rabbit MQ 服务器实例的状态。</p>
+<p>打开命令窗口：</p>
+<p>输入命令：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">"</span><span style="color: #800000;">C:\Program Files\RabbitMQ Server\rabbitmq_server-3.6.5\sbin\rabbitmq-plugins.bat</span><span style="color: #800000;">"</span> enable rabbitmq_management</pre>
+</div>
+<p><img src="./windows下 安装 rabbitMQ 及操作常用命令 - Eric-Lee - 博客园_files/784082-20160924000520059-1488931520.png" alt=""></p>
+<p>这样，就安装好插件了，是不是能使用了呢？别急，需要重启服务才行，使用命令：</p>
+<div class="cnblogs_code">
+<pre>net stop RabbitMQ &amp;&amp; net start RabbitMQ</pre>
+</div>
+<p>这时候的，也许会出现这种结果：</p>
+<p><img src="./windows下 安装 rabbitMQ 及操作常用命令 - Eric-Lee - 博客园_files/784082-20160924001111465-1934628397.png" alt=""></p>
+<p>“发生错误：发生系统错误<span lang="EN-US"> 5。<span lang="EN-US">&nbsp; 拒绝访问。”</span></span></p>
+<p>这是什么鬼？查了下，原来，5代表的是：不是系统管理员权限。</p>
+<p>问题解决方案：使用管理员打开<span lang="EN-US">cmd再执行此命令：</span></p>
+<p><span lang="EN-US"><img src="./windows下 安装 rabbitMQ 及操作常用命令 - Eric-Lee - 博客园_files/784082-20160924001344449-518927811.png" alt=""></span></p>
+<p>这样就结束了吗？当然没有。</p>
+<h3>创建用户，密码，绑定角色</h3>
+<p>使用<span lang="EN-US">rabbitmqctl控制台命令（位于<span lang="EN-US">C:\Program Files\RabbitMQ Server\rabbitmq_server-3.6.5\sbin&gt;）来创建用户，密码，绑定权限等。</span></span></p>
+<p>注意：安装路径不同的请看仔细啊。</p>
+<p>rabbitmq的用户管理包括增加用户，删除用户，查看用户列表，修改用户密码。</p>
+<p>查看已有用户及用户的角色：</p>
+<div class="cnblogs_code">
+<pre>rabbitmqctl.bat list_users</pre>
+</div>
+<p><img src="./windows下 安装 rabbitMQ 及操作常用命令 - Eric-Lee - 博客园_files/784082-20160924001810231-489339837.png" alt=""></p>
+<p>新增一个用户：</p>
+<div class="cnblogs_code">
+<pre>rabbitmqctl.bat add_user username password</pre>
+</div>
+<p><img src="./windows下 安装 rabbitMQ 及操作常用命令 - Eric-Lee - 博客园_files/784082-20160924002317996-1750317042.png" alt=""></p>
+<p>&nbsp;</p>
+<p>此时来看下我们当前用户哈：</p>
+<p><img src="./windows下 安装 rabbitMQ 及操作常用命令 - Eric-Lee - 博客园_files/784082-20160924002417481-667312419.png" alt=""></p>
+<p>eric 后面没有“[administrator]”</p>
+<p>这个administrator是干嘛用的呢？这就涉及到用户角色问题了：</p>
+<p>按照我个人理解，rabbitmq用户角色可分为五类：超级管理员, 监控者, 策略制定者, 普通管理者以及其他。</p>
+<p>(1)&nbsp;超级管理员(administrator)</p>
+<p>可登陆管理控制台(启用management plugin的情况下)，可查看所有的信息，并且可以对用户，策略(policy)进行操作。</p>
+<p>(2)&nbsp;监控者(monitoring)</p>
+<p>可登陆管理控制台(启用management plugin的情况下)，同时可以查看rabbitmq节点的相关信息(进程数，内存使用情况，磁盘使用情况等)&nbsp;</p>
+<p>(3)&nbsp;策略制定者(policymaker)</p>
+<p>可登陆管理控制台(启用management plugin的情况下), 同时可以对policy进行管理。</p>
+<p>(4)&nbsp;普通管理者(management)</p>
+<p>仅可登陆管理控制台(启用management plugin的情况下)，无法看到节点信息，也无法对策略进行管理。</p>
+<p>(5) 其他的</p>
+<p>无法登陆管理控制台，通常就是普通的生产者和消费者。</p>
+<p>&nbsp;</p>
+<p>好啦，我们也给 eric 变成 “超级管理员” 角色：</p>
+<div class="cnblogs_code">
+<pre>rabbitmqctl.bat set_user_tags username administrator</pre>
+</div>
+<p><img src="./windows下 安装 rabbitMQ 及操作常用命令 - Eric-Lee - 博客园_files/784082-20160924003014246-2015422375.png" alt=""></p>
+<p>再看下结果哈：</p>
+<p><img src="./windows下 安装 rabbitMQ 及操作常用命令 - Eric-Lee - 博客园_files/784082-20160924003047621-1862534375.png" alt=""></p>
+<p>当然，除了上面的administrator 还有 monitoring、policymaker、management、自定义名称&nbsp;，对应上面介绍到的不同的角色。</p>
+<p>像我们人一样，我们角色除了是公司的员工，还是父母的孩子、子女的爸妈等，用户也可以同时具有多个角色,设置方式:</p>
+<div class="cnblogs_code">
+<pre>rabbitmqctl.bat  set_user_tags  username tag1 tag2 ...</pre>
+</div>
+<p><img src="./windows下 安装 rabbitMQ 及操作常用命令 - Eric-Lee - 博客园_files/784082-20160924005224668-1215172795.png" alt=""></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>恩，现在总觉得guest 这个不安全（它的默认密码是guest）,想更改密码，好办：</p>
+<div class="cnblogs_code">
+<pre>rabbitmqctl change_password userName newPassword</pre>
+</div>
+<p><img src="./windows下 安装 rabbitMQ 及操作常用命令 - Eric-Lee - 博客园_files/784082-20160924003352168-1350202979.png" alt=""></p>
+<p>&nbsp;</p>
+<p>有的人也许会说，我就是看guest不爽，老子新增了administrator用户了，就是想干掉它，可以：</p>
+<div class="cnblogs_code">
+<pre>rabbitmqctl.bat delete_user username</pre>
+</div>
+<p><img src="./windows下 安装 rabbitMQ 及操作常用命令 - Eric-Lee - 博客园_files/784082-20160924003722731-332310837.png" alt=""></p>
+<p>&nbsp;</p>
+<p>&nbsp;这时，可能有人就要问了：命令框是只有一个用户了，你怎么操作啊？怎么查看执行情况啊/</p>
+<p>&nbsp;当然有路子啦：</p>
+<p>使用浏览器打开<a href="http://localhost:15672/" target="_blank">&nbsp;http://localhost:15672</a><a href="http://localhost:15672%C2%A0/" rel="nofollow" target="_blank">&nbsp;</a>访问Rabbit Mq的管理控制台，使用刚才创建的账号登陆系统：</p>
+<p>&nbsp;<img src="./windows下 安装 rabbitMQ 及操作常用命令 - Eric-Lee - 博客园_files/784082-20160924004023387-110874920.png" alt=""></p>
+<p><img src="./windows下 安装 rabbitMQ 及操作常用命令 - Eric-Lee - 博客园_files/784082-20160924004035121-53385779.png" alt=""></p>
+<p>&nbsp;</p>
+<p>其实，除了可查看所有的信息 ，上面的命令 增删改查、权限设置，都可以在这个页面完成，还可以依据业务需求设置策略(policy)，具体的就不在这里啰嗦了，大家可以看看网上的帖子。</p>
+<h3><span style="font-size: 14px; line-height: 1.5;">权限设置</span></h3>
+<p><span style="font-size: 14px; line-height: 1.5;">用户有了角色，那也需要权限设置啊，别急，慢慢来：</span></p>
+<p>按照官方文档，用户权限指的是用户对exchange，queue的操作权限，包括配置权限，读写权限。</p>
+<p>我们配置权限会影响到exchange、queue的声明和删除。</p>
+<p>读写权限影响到从queue里取消息、向exchange发送消息以及queue和exchange的绑定(binding)操作。</p>
+<p>例如：&nbsp;将queue绑定到某exchange上，需要具有queue的可写权限，以及exchange的可读权限；向exchange发送消息需要具有exchange的可写权限；从queue里取数据需要具有queue的可读权限</p>
+<p>&nbsp;</p>
+<p>权限相关命令为：</p>
+<p>(1) 设置用户权限</p>
+<p>rabbitmqctl &nbsp;set_permissions &nbsp;-p &nbsp;VHostPath &nbsp;User &nbsp;ConfP &nbsp;WriteP &nbsp;ReadP</p>
+<p>(2) 查看(指定hostpath)所有用户的权限信息</p>
+<p>rabbitmqctl &nbsp;list_permissions &nbsp;[-p &nbsp;VHostPath]</p>
+<p>(3) 查看指定用户的权限信息</p>
+<p>rabbitmqctl &nbsp;list_user_permissions &nbsp;User</p>
+<p>(4) &nbsp;清除用户的权限信息</p>
+<p>rabbitmqctl &nbsp;clear_permissions &nbsp;[-p VHostPath] &nbsp;User</p>
+<p>&nbsp;</p>
+<p>现在环境搭好了，用户、角色、权限全部设置好，开始进行code（原理整理，及编码 待续）</p>
+<h2>参考：</h2>
+<p>安装参考&nbsp;<a href="http://www.rabbitmq.com/install-windows-manual.html" target="_blank">http://www.rabbitmq.com/install-windows-manual.html</a></p>
+<p>权限内容参考&nbsp;<a href="http://www.rabbitmq.com/man/rabbitmqctl.1.man.html" target="_blank">http://www.rabbitmq.com/man/rabbitmqctl.1.man.html</a></p>
+<p>权限命令摘自&nbsp;<a href="https://my.oschina.net/hncscwc/blog/262246" target="_blank">https://my.oschina.net/hncscwc/blog/262246</a></p>
+<p>&nbsp;</p></div><div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+<div id="BlogPostCategory"></div>
+<div id="EntryTag">标签: <a href="http://www.cnblogs.com/ericli-ericli/tag/RabbitMQ%20%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/">RabbitMQ 消息队列</a></div>
+<div id="blog_post_info"><div id="green_channel">
+        <a href="javascript:void(0);" id="green_channel_digg" onclick="DiggIt(5902270,cb_blogId,1);green_channel_success(this,&#39;谢谢推荐！&#39;);">好文要顶</a>
+            <a id="green_channel_follow" onclick="follow(&#39;6fc61bde-7427-e511-b908-9dcfd8948a71&#39;);" href="javascript:void(0);">关注我</a>
+    <a id="green_channel_favorite" onclick="AddToWz(cb_entryId);return false;" href="javascript:void(0);">收藏该文</a>
+    <a id="green_channel_weibo" href="javascript:void(0);" title="分享至新浪微博" onclick="ShareToTsina()"><img src="./windows下 安装 rabbitMQ 及操作常用命令 - Eric-Lee - 博客园_files/icon_weibo_24.png" alt=""></a>
+    <a id="green_channel_wechat" href="javascript:void(0);" title="分享至微信" onclick="shareOnWechat()"><img src="./windows下 安装 rabbitMQ 及操作常用命令 - Eric-Lee - 博客园_files/wechat.png" alt=""></a>
+</div>
+<div id="author_profile">
+    <div id="author_profile_info" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/ericli-ericli/" target="_blank"><img src="./windows下 安装 rabbitMQ 及操作常用命令 - Eric-Lee - 博客园_files/20160504155913.png" class="author_avatar" alt=""></a>
+        <div id="author_profile_detail" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/ericli-ericli/">Eric-Lee</a><br>
+            <a href="http://home.cnblogs.com/u/ericli-ericli/followees">关注 - 8</a><br>
+            <a href="http://home.cnblogs.com/u/ericli-ericli/followers">粉丝 - 22</a>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div id="author_profile_honor"></div>
+    <div id="author_profile_follow">
+                <a href="javascript:void(0);" onclick="follow(&#39;6fc61bde-7427-e511-b908-9dcfd8948a71&#39;);return false;">+加关注</a>
+    </div>
+</div>
+<div id="div_digg">
+    <div class="diggit" onclick="votePost(5902270,&#39;Digg&#39;)">
+        <span class="diggnum" id="digg_count">5</span>
+    </div>
+    <div class="buryit" onclick="votePost(5902270,&#39;Bury&#39;)">
+        <span class="burynum" id="bury_count">0</span>
+    </div>
+    <div class="clear"></div>
+    <div class="diggword" id="digg_tips">
+    </div>
+</div>
+</div>
+<div class="clear"></div>
+<div id="post_next_prev"><a href="http://www.cnblogs.com/ericli-ericli/p/5895078.html" class="p_n_p_prefix">« </a> 上一篇：<a href="http://www.cnblogs.com/ericli-ericli/p/5895078.html" title="发布于2016-09-22 09:49">“SqlDateTime 溢出。必须介于 1/1/1753 12:00:00 AM 和 12/31/9999 11:59:59 PM 之间。”</a><br><a href="http://www.cnblogs.com/ericli-ericli/p/5917018.html" class="p_n_p_prefix">» </a> 下一篇：<a href="http://www.cnblogs.com/ericli-ericli/p/5917018.html" title="发布于2016-09-29 09:29">RabbitMQ原理与相关操作(一)</a><br></div>
+</div>
+
+</div>
+		<p class="postfoot">
+			posted on <span id="post-date">2016-09-24 01:16</span> <a href="http://www.cnblogs.com/ericli-ericli/">Eric-Lee</a> 阅读(<span id="post_view_count">12519</span>) 评论(<span id="post_comment_count">5</span>)  <a href="https://i.cnblogs.com/EditPosts.aspx?postid=5902270" rel="nofollow">编辑</a> <a href="http://www.cnblogs.com/ericli-ericli/p/5902270.html#" onclick="AddToWz(5902270);return false;">收藏</a>
+		</p>
+	</div>
+	<script type="text/javascript">var allowComments=true,cb_blogId=235000,cb_entryId=5902270,cb_blogApp=currentBlogApp,cb_blogUserGuid='6fc61bde-7427-e511-b908-9dcfd8948a71',cb_entryCreatedDate='2016/9/24 1:16:00';loadViewCount(cb_entryId);</script>
+	
+	</div><a name="!comments"></a><div id="blog-comments-placeholder"><div id="comments_pager_top"></div>
+<a name="comments"></a>
+<div id="comments">
+<h3>评论</h3>
+
+
+	<h4><a href="http://www.cnblogs.com/ericli-ericli/p/5902270.html#3518395" class="layer">#1楼</a><a name="3518395" id="comment_anchor_3518395"></a><span> <span class="comment_date">2016-09-24 08:45</span></span><a id="a_comment_author_3518395" href="http://www.cnblogs.com/niunan/" target="_blank">牛腩</a> <a href="http://msg.cnblogs.com/send/%E7%89%9B%E8%85%A9" title="发送站内短消息" class="sendMsg2This">&nbsp;</a></h4>
+	<p></p><div id="comment_body_3518395" class="blog_comment_body">fcrf 支持支持</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3518395,&#39;Digg&#39;,this)">支持(1)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3518395,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_3518395_avatar" style="display:none;">http://pic.cnblogs.com/face/u41249.jpg</span><span class="comment_actions"></span><p></p>
+
+	<h4><a href="http://www.cnblogs.com/ericli-ericli/p/5902270.html#3518575" class="layer">#2楼</a><a name="3518575" id="comment_anchor_3518575"></a><span> <span class="comment_date">2016-09-24 14:34</span></span><a id="a_comment_author_3518575" href="http://www.cnblogs.com/zhouxiaoyun/" target="_blank">传说中的十三月</a> <a href="http://msg.cnblogs.com/send/%E4%BC%A0%E8%AF%B4%E4%B8%AD%E7%9A%84%E5%8D%81%E4%B8%89%E6%9C%88" title="发送站内短消息" class="sendMsg2This">&nbsp;</a></h4>
+	<p></p><div id="comment_body_3518575" class="blog_comment_body">支持一下！</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3518575,&#39;Digg&#39;,this)">支持(1)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3518575,&#39;Bury&#39;,this)">反对(0)</a></div><span class="comment_actions"></span><p></p>
+
+	<h4><a href="http://www.cnblogs.com/ericli-ericli/p/5902270.html#3522320" class="layer">#3楼</a><a name="3522320" id="comment_anchor_3522320"></a><span> <span class="comment_date">2016-09-29 11:04</span></span><a id="a_comment_author_3522320" href="http://www.cnblogs.com/kejie/" target="_blank">～扎克伯格</a> <a href="http://msg.cnblogs.com/send/%EF%BD%9E%E6%89%8E%E5%85%8B%E4%BC%AF%E6%A0%BC" title="发送站内短消息" class="sendMsg2This">&nbsp;</a></h4>
+	<p></p><div id="comment_body_3522320" class="blog_comment_body">大兄弟，我这边激活 RabbitMQ's Management Plugin时，提示Plugin configuration unchanged.</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3522320,&#39;Digg&#39;,this)">支持(1)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3522320,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_3522320_avatar" style="display:none;">http://pic.cnblogs.com/face/794435/20161111230023.png</span><span class="comment_actions"></span><p></p>
+
+	<h4><a href="http://www.cnblogs.com/ericli-ericli/p/5902270.html#3522376" class="layer">#4楼</a><a name="3522376" id="comment_anchor_3522376"></a>[<span class="louzhu">楼主</span>]<span> <span class="comment_date">2016-09-29 12:01</span></span><a id="a_comment_author_3522376" href="http://www.cnblogs.com/ericli-ericli/" target="_blank">Eric-Lee</a> <a href="http://msg.cnblogs.com/send/Eric-Lee" title="发送站内短消息" class="sendMsg2This">&nbsp;</a></h4>
+	<p></p><div id="comment_body_3522376" class="blog_comment_body"><a href="http://www.cnblogs.com/ericli-ericli/p/5902270.html#3522320" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,3522320);">@</a>
+IT民工-杰<br>详细的报错信息发下</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3522376,&#39;Digg&#39;,this)">支持(1)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3522376,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_3522376_avatar" style="display:none;">http://pic.cnblogs.com/face/784082/20160504155913.png</span><span class="comment_actions"></span><p></p>
+
+	<h4><a href="http://www.cnblogs.com/ericli-ericli/p/5902270.html#3585724" class="layer">#5楼</a><a name="3585724" id="comment_anchor_3585724"></a><span id="comment-maxId" style="display:none;">3585724</span><span id="comment-maxDate" style="display:none;">2016/12/20 20:43:50</span><span> <span class="comment_date">2016-12-20 20:43</span></span><a id="a_comment_author_3585724" href="http://www.cnblogs.com/xxzhuang/" target="_blank">请叫我红领巾!</a> <a href="http://msg.cnblogs.com/send/%E8%AF%B7%E5%8F%AB%E6%88%91%E7%BA%A2%E9%A2%86%E5%B7%BE%21" title="发送站内短消息" class="sendMsg2This">&nbsp;</a></h4>
+	<p></p><div id="comment_body_3585724" class="blog_comment_body">在使用&gt;rabbitmq-plugins.bat enable rabbitmq_management 出现了这样的问题，请问要怎么解决<br><br>Plugin configuration unchanged.<br><br>Applying plugin configuration to rabbit@O997YO5IC1MVTPQ... failed.<br> * Could not contact node rabbit@O997YO5IC1MVTPQ.<br>   Changes will take effect at broker restart.<br> * Options: --online  - fail if broker cannot be contacted.<br>            --offline - do not try to contact broker.</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3585724,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3585724,&#39;Bury&#39;,this)">反对(1)</a></div><span id="comment_3585724_avatar" style="display:none;">http://pic.cnblogs.com/face/950278/20170420120620.png</span><span class="comment_actions"></span><p></p>
+
+</div><div id="comments_pager_bottom"></div></div><script type="text/javascript">var commentManager = new blogCommentManager();commentManager.renderComments(0);</script>
+<div id="comment_form" class="commentform">
+<a name="commentform"></a>
+<div id="divCommentShow"></div>
+<div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="http://www.cnblogs.com/ericli-ericli/p/5902270.html#" onclick="return RefreshPage();">刷新页面</a><a href="http://www.cnblogs.com/ericli-ericli/p/5902270.html#top">返回顶部</a></div>
+<div id="comment_form_container"><div class="login_tips">注册用户登录后才能发表评论，请 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return login(&#39;commentform&#39;);">登录</a> 或 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return register();">注册</a>，<a href="http://www.cnblogs.com/">访问</a>网站首页。</div></div>
+<div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+<div id="ad_t2"><a href="http://www.ucancode.com/index.htm" target="_blank">【推荐】50万行VC++源码: 大型组态工控、电力仿真CAD与GIS源码库</a><br><a href="https://www.jiguang.cn/devservice?bky" target="_blank">【推荐】极光开发者服务平台，五大功能一站集齐</a><br><a href="https://dnspod.cloud.tencent.com/act/seckill?fromSource=gwzcw.410370.410370.410370" target="_blank">【推荐】腾讯云域名+云解析 限时折扣抓紧抢购</a><br><a href="http://click.aliyun.com/m/18488/" target="_blank">【推荐】阿里云“全民云计算”优惠升级</a><br><a href="https://cloud.tencent.com/developer/labs?fromSource=gwzcw.330910.330910.330910" target="_blank">【推荐】一小时搭建人工智能应用，让技术更容易入门</a><br></div>
+<div id="opt_under_post"></div>
+<div id="cnblogs_c1" class="c_ad_block"><a href="http://click.aliyun.com/m/26126/" target="_blank"><img width="300" height="250" src="./windows下 安装 rabbitMQ 及操作常用命令 - Eric-Lee - 博客园_files/24442-20170718132533661-166801094.jpg" alt="阿里云0718"></a></div>
+<div id="under_post_news"><div class="itnews c_ad_block"><b>最新IT新闻</b>:<br> ·  <a href="http://news.cnblogs.com/n/576664/" target="_blank">罗永浩确认：锤子手机用上YunOS！未来会开放给更多手机</a><br> ·  <a href="http://news.cnblogs.com/n/576663/" target="_blank">Windows杀软长测PK：卡巴满分居首、微软Defender垫底</a><br> ·  <a href="http://news.cnblogs.com/n/576661/" target="_blank">京东金融虽“走出”京东 但刘强东仍具控制权</a><br> ·  <a href="http://news.cnblogs.com/n/576658/" target="_blank">手机预装APP“死灰复燃” 这颗“毒瘤”到底怎么了</a><br> ·  <a href="http://news.cnblogs.com/n/576657/" target="_blank">你的手机什么时候会获得安卓8.0？各家厂商怎么说</a><br>» <a href="http://news.cnblogs.com/" title="IT新闻" target="_blank">更多新闻...</a></div></div>
+<div id="cnblogs_c2" class="c_ad_block"><a href="https://www.jiguang.cn/devservice?source=bky&amp;hmsr=%E5%8D%9A%E5%AE%A2%E5%9B%AD&amp;hmpl=&amp;hmcu=&amp;hmkw=&amp;hmci=" target="_blank"><img width="468" height="60" src="./windows下 安装 rabbitMQ 及操作常用命令 - Eric-Lee - 博客园_files/24442-20170727100914671-839522651.gif" alt="极光0801"></a></div>
+<div id="under_post_kb"><div class="itnews c_ad_block" id="kb_block"><b>最新知识库文章</b>:<br><div id="kb_recent"> ·  <a href="http://kb.cnblogs.com/page/575829/" target="_blank">做到这一点，你也可以成为优秀的程序员</a><br> ·  <a href="http://kb.cnblogs.com/page/566880/" target="_blank">写给立志做码农的大学生</a><br> ·  <a href="http://kb.cnblogs.com/page/569057/" target="_blank">架构腐化之谜</a><br> ·  <a href="http://kb.cnblogs.com/page/572854/" target="_blank">学会思考，而不只是编程</a><br> ·  <a href="http://kb.cnblogs.com/page/574767/" target="_blank">编写Shell脚本的最佳实践</a><br></div>» <a href="http://kb.cnblogs.com/" target="_blank">更多知识库文章...</a></div></div>
+<div id="HistoryToday" class="c_ad_block"></div>
+<script type="text/javascript">
+    fixPostBody();
+    setTimeout(function () { incrementViewCount(cb_entryId); }, 50);
+    deliverAdT2();
+    deliverAdC1();
+    deliverAdC2();    
+    loadNewsAndKb();
+    loadBlogSignature();
+    LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+    GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate);
+    loadOptUnderPost();
+    GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);   
+</script>
+</div>
+
+    
+</div>
+<div id="rightmenu">
+    
+        
+<h3>公告</h3>
+	<div id="blog-news"><div id="profile_block">昵称：<a href="http://home.cnblogs.com/u/ericli-ericli/">Eric-Lee</a><br>园龄：<a href="http://home.cnblogs.com/u/ericli-ericli/" title="入园时间：2015-07-11">2年1个月</a><br>粉丝：<a href="http://home.cnblogs.com/u/ericli-ericli/followers/">22</a><br>关注：<a href="http://home.cnblogs.com/u/ericli-ericli/followees/">8</a><div id="p_b_follow"><a href="javascript:void(0);" onclick="follow(&#39;6fc61bde-7427-e511-b908-9dcfd8948a71&#39;)">+加关注</a></div></div></div><script type="text/javascript">loadBlogNews();</script>
+
+        
+<h3>导航</h3>
+<ul>
+			<li><a id="blog_nav_sitehome" href="http://www.cnblogs.com/">博客园</a></li>
+			<li><a id="blog_nav_myhome" href="http://www.cnblogs.com/ericli-ericli/">首页</a></li>
+			<li><a id="blog_nav_newpost" rel="nofollow" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">新随笔</a></li>
+			<li><a id="blog_nav_contact" accesskey="9" rel="nofollow" href="https://msg.cnblogs.com/send/Eric-Lee">联系</a></li>
+			<li><a id="blog_nav_rss" href="http://www.cnblogs.com/ericli-ericli/rss">订阅</a><a id="blog_nav_rss_image" href="http://www.cnblogs.com/ericli-ericli/rss"><img src="./windows下 安装 rabbitMQ 及操作常用命令 - Eric-Lee - 博客园_files/xml.gif" alt="订阅"></a>
+			</li><li><a id="blog_nav_admin" rel="nofollow" href="https://i.cnblogs.com/">管理</a></li>
+</ul>
+        <div id="blog-calendar" style=""><table id="blogCalendar" class="Cal" cellspacing="0" cellpadding="0" title="日历">
+	<tbody><tr><td colspan="7"><table class="CalTitle" cellspacing="0">
+		<tbody><tr><td class="CalNextPrev"><a href="javascript:void(0);" onclick="loadBlogCalendar(&#39;2017/07/01&#39;);return false;">&lt;</a></td><td align="center">2017年8月</td><td class="CalNextPrev" align="right"><a href="javascript:void(0);" onclick="loadBlogCalendar(&#39;2017/09/01&#39;);return false;">&gt;</a></td></tr>
+	</tbody></table></td></tr><tr><th class="CalDayHeader" align="center" abbr="日" scope="col">日</th><th class="CalDayHeader" align="center" abbr="一" scope="col">一</th><th class="CalDayHeader" align="center" abbr="二" scope="col">二</th><th class="CalDayHeader" align="center" abbr="三" scope="col">三</th><th class="CalDayHeader" align="center" abbr="四" scope="col">四</th><th class="CalDayHeader" align="center" abbr="五" scope="col">五</th><th class="CalDayHeader" align="center" abbr="六" scope="col">六</th></tr><tr><td class="CalOtherMonthDay" align="center">30</td><td class="CalOtherMonthDay" align="center">31</td><td align="center"><a href="http://www.cnblogs.com/ericli-ericli/archive/2017/08/01.html"><u>1</u></a></td><td align="center">2</td><td align="center">3</td><td align="center">4</td><td class="CalWeekendDay" align="center">5</td></tr><tr><td class="CalWeekendDay" align="center">6</td><td align="center">7</td><td align="center">8</td><td align="center">9</td><td align="center">10</td><td align="center">11</td><td class="CalWeekendDay" align="center">12</td></tr><tr><td class="CalWeekendDay" align="center">13</td><td align="center">14</td><td align="center">15</td><td align="center">16</td><td align="center">17</td><td align="center">18</td><td class="CalWeekendDay" align="center">19</td></tr><tr><td class="CalWeekendDay" align="center">20</td><td align="center">21</td><td class="CalTodayDay" align="center">22</td><td align="center">23</td><td align="center">24</td><td align="center">25</td><td class="CalWeekendDay" align="center">26</td></tr><tr><td class="CalWeekendDay" align="center">27</td><td align="center">28</td><td align="center">29</td><td align="center">30</td><td align="center">31</td><td class="CalOtherMonthDay" align="center">1</td><td class="CalOtherMonthDay" align="center">2</td></tr><tr><td class="CalOtherMonthDay" align="center">3</td><td class="CalOtherMonthDay" align="center">4</td><td class="CalOtherMonthDay" align="center">5</td><td class="CalOtherMonthDay" align="center">6</td><td class="CalOtherMonthDay" align="center">7</td><td class="CalOtherMonthDay" align="center">8</td><td class="CalOtherMonthDay" align="center">9</td></tr>
+</tbody></table></div><script type="text/javascript">loadBlogDefaultCalendar();</script>
+        <div id="blog_stats">
+<h3>统计</h3>
+	<ul>
+		<li>随笔 - 72
+		</li><li>文章 - 22
+		</li><li>评论 - 23
+		</li><li>引用 - 0
+	</li>
+</ul></div>
+        <div id="blog-sidecolumn"><div id="sidebar_search" class="sidebar-block">
+<div id="sidebar_search" class="mySearch">
+<h3 class="catListTitle">搜索</h3>
+<div id="sidebar_search_box">
+<div id="widget_my_zzk" class="div_my_zzk"><input type="text" id="q" onkeydown="return zzk_go_enter(event);" class="input_my_zzk">&nbsp;<input onclick="zzk_go()" type="button" value="找找看" id="btnZzk" class="btn_my_zzk"></div>
+<div id="widget_my_google" class="div_my_zzk"><input type="text" name="google_q" id="google_q" onkeydown="return google_go_enter(event)" class="input_my_zzk">&nbsp;<input onclick="google_go()" type="button" value="谷歌搜索" class="btn_my_zzk"></div>
+</div>
+</div>
+
+</div><div id="sidebar_shortcut" class="sidebar-block">
+<h3 class="catListTitle">常用链接</h3>
+<ul>
+<li><a href="http://www.cnblogs.com/ericli-ericli/p/" title="我的博客的随笔列表">我的随笔</a></li><li><a href="http://www.cnblogs.com/ericli-ericli/MyComments.html" title="我发表过的评论列表">我的评论</a></li><li><a href="http://www.cnblogs.com/ericli-ericli/OtherPosts.html" title="我评论过的随笔列表">我的参与</a></li><li><a href="http://www.cnblogs.com/ericli-ericli/RecentComments.html" title="我的博客的评论列表">最新评论</a></li><li><a href="http://www.cnblogs.com/ericli-ericli/tag/" title="我的博客的标签列表">我的标签</a></li>
+</ul>
+<div id="itemListLin_con" style="display:none;">
+
+</div></div><div id="sidebar_toptags" class="sidebar-block">
+<h3 class="catListTitle">我的标签</h3>
+<div id="MyTag">
+<ul>
+<li><a href="http://www.cnblogs.com/ericli-ericli/tag/Linux/">Linux</a>(11)</li><li><a href="http://www.cnblogs.com/ericli-ericli/tag/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E8%BF%9B%E5%87%BBJavaWeb/">从零开始进击JavaWeb</a>(8)</li><li><a href="http://www.cnblogs.com/ericli-ericli/tag/Maven/">Maven</a>(6)</li><li><a href="http://www.cnblogs.com/ericli-ericli/tag/MySql/">MySql</a>(6)</li><li><a href="http://www.cnblogs.com/ericli-ericli/tag/RabbitMQ%20%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/">RabbitMQ 消息队列</a>(4)</li><li><a href="http://www.cnblogs.com/ericli-ericli/tag/.net%E5%A4%9A%E7%BA%BF%E7%A8%8B/">.net多线程</a>(1)</li>
+</ul>
+</div></div><div id="sidebar_categories">
+		<h3>随笔分类</h3>
+		
+				<ul>
+			
+				<li><a id="CatList_LinkList_0_Link_0" href="http://www.cnblogs.com/ericli-ericli/category/711193.html">.NET(24)</a> </li>
+			
+				<li><a id="CatList_LinkList_0_Link_1" href="http://www.cnblogs.com/ericli-ericli/category/720445.html">jQuery(9)</a> </li>
+			
+				<li><a id="CatList_LinkList_0_Link_2" href="http://www.cnblogs.com/ericli-ericli/category/756986.html">SQL(7)</a> </li>
+			
+				<li><a id="CatList_LinkList_0_Link_3" href="http://www.cnblogs.com/ericli-ericli/category/771429.html">web架构相关</a> </li>
+			
+				</ul>
+			
+	
+		<h3>随笔档案</h3>
+		
+				<ul>
+			
+				<li><a id="CatList_LinkList_1_Link_0" href="http://www.cnblogs.com/ericli-ericli/archive/2017/08.html">2017年8月 (2)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_1" href="http://www.cnblogs.com/ericli-ericli/archive/2017/07.html">2017年7月 (7)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_2" href="http://www.cnblogs.com/ericli-ericli/archive/2017/06.html">2017年6月 (6)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_3" href="http://www.cnblogs.com/ericli-ericli/archive/2017/05.html">2017年5月 (10)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_4" href="http://www.cnblogs.com/ericli-ericli/archive/2017/03.html">2017年3月 (3)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_5" href="http://www.cnblogs.com/ericli-ericli/archive/2017/02.html">2017年2月 (1)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_6" href="http://www.cnblogs.com/ericli-ericli/archive/2017/01.html">2017年1月 (3)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_7" href="http://www.cnblogs.com/ericli-ericli/archive/2016/12.html">2016年12月 (3)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_8" href="http://www.cnblogs.com/ericli-ericli/archive/2016/11.html">2016年11月 (3)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_9" href="http://www.cnblogs.com/ericli-ericli/archive/2016/10.html">2016年10月 (3)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_10" href="http://www.cnblogs.com/ericli-ericli/archive/2016/09.html">2016年9月 (5)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_11" href="http://www.cnblogs.com/ericli-ericli/archive/2016/08.html">2016年8月 (2)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_12" href="http://www.cnblogs.com/ericli-ericli/archive/2016/06.html">2016年6月 (6)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_13" href="http://www.cnblogs.com/ericli-ericli/archive/2016/05.html">2016年5月 (2)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_14" href="http://www.cnblogs.com/ericli-ericli/archive/2016/02.html">2016年2月 (2)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_15" href="http://www.cnblogs.com/ericli-ericli/archive/2015/12.html">2015年12月 (1)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_16" href="http://www.cnblogs.com/ericli-ericli/archive/2015/11.html">2015年11月 (4)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_17" href="http://www.cnblogs.com/ericli-ericli/archive/2015/09.html">2015年9月 (1)</a> </li>
+			
+				<li><a id="CatList_LinkList_1_Link_18" href="http://www.cnblogs.com/ericli-ericli/archive/2015/08.html">2015年8月 (8)</a> </li>
+			
+				</ul>
+			
+	
+		<h3>文章分类</h3>
+		
+				<ul>
+			
+				<li><a id="CatList_LinkList_2_Link_0" href="http://www.cnblogs.com/ericli-ericli/category/843289.html">.net(6)</a> </li>
+			
+				<li><a id="CatList_LinkList_2_Link_1" href="http://www.cnblogs.com/ericli-ericli/category/846784.html">JS(1)</a> </li>
+			
+				<li><a id="CatList_LinkList_2_Link_2" href="http://www.cnblogs.com/ericli-ericli/category/771572.html">SQL(1)</a> </li>
+			
+				<li><a id="CatList_LinkList_2_Link_3" href="http://www.cnblogs.com/ericli-ericli/category/771435.html">web架构设计(6)</a> </li>
+			
+				<li><a id="CatList_LinkList_2_Link_4" href="http://www.cnblogs.com/ericli-ericli/category/846785.html">安全防御(1)</a> </li>
+			
+				</ul>
+			
+	</div><div id="sidebar_recentcomments" class="sidebar-block"><div id="recent_comments_wrap">
+<h3 class="catListTitle">最新评论</h3>
+<div class="RecentComment" id="RecentComments">
+	<div id="RecentCommentsBlock"><ul>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/ericli-ericli/p/7268796.html#3749247">1. Re:MySql 事务与锁</a></li>
+        <li class="recent_comment_body">mark</li>
+        <li class="recent_comment_author">--0o一泓秋水o0</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/ericli-ericli/p/7268796.html#3748606">2. Re:MySql 事务与锁</a></li>
+        <li class="recent_comment_body">支持支持支持</li>
+        <li class="recent_comment_author">--牛腩</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/ericli-ericli/p/7268796.html#3748446">3. Re:MySql 事务与锁</a></li>
+        <li class="recent_comment_body">图画的挺有意思的</li>
+        <li class="recent_comment_author">--GeaoZhang</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/ericli-ericli/p/7239969.html#3743866">4. Re:Ubuntu16.04.2 LTS下使用编译安装程序(使用configure、make、 make install)</a></li>
+        <li class="recent_comment_body">@蓝莓酱丶谢谢，很好的建议，linux本多，操作确实也会有很大不同...</li>
+        <li class="recent_comment_author">--Eric-Lee</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/ericli-ericli/p/7239969.html#3743861">5. Re:Linux使用编译安装程序(使用configure、make、 make install)</a></li>
+        <li class="recent_comment_body">我觉得应该要注明linux系统版本，ubuntu和centos还有redhat 的命令差很多，虽然核心是差不多的，但是方便别人看的时候不是一股脑复制你的命令，还是注明一下比较好</li>
+        <li class="recent_comment_author">--蓝莓酱丶</li>
+</ul>
+</div>
+</div>
+</div></div><div id="sidebar_topviewedposts" class="sidebar-block"><div id="topview_posts_wrap">
+<h3 class="catListTitle">阅读排行榜</h3>
+<div class="RecentComment" id="TopViewPosts"> 
+	<div id="TopViewPostsBlock"><ul><li><a href="http://www.cnblogs.com/ericli-ericli/p/5902270.html">1. windows下 安装 rabbitMQ 及操作常用命令(12518)</a></li><li><a href="http://www.cnblogs.com/ericli-ericli/p/5917018.html">2. RabbitMQ原理与相关操作(一)(5697)</a></li><li><a href="http://www.cnblogs.com/ericli-ericli/p/5857407.html">3. .net 将List序列化成Json字符串(3194)</a></li><li><a href="http://www.cnblogs.com/ericli-ericli/p/5177076.html">4. SQL分页查询，纯Top方式和row_number()解析函数的使用及区别(3125)</a></li><li><a href="http://www.cnblogs.com/ericli-ericli/p/5938106.html">5. RabbitMQ原理与相关操作(三)消息持久化(2093)</a></li></ul></div>
+</div>
+</div></div><div id="sidebar_topcommentedposts" class="sidebar-block"><div id="topfeedback_posts_wrap">
+<h3 class="catListTitle">评论排行榜</h3>
+<div class="RecentComment" id="TopCommentsPosts">
+	<div id="TopFeedbackPostsBlock"><ul><li><a href="http://www.cnblogs.com/ericli-ericli/p/5177076.html">1. SQL分页查询，纯Top方式和row_number()解析函数的使用及区别(6)</a></li><li><a href="http://www.cnblogs.com/ericli-ericli/p/5902270.html">2. windows下 安装 rabbitMQ 及操作常用命令(5)</a></li><li><a href="http://www.cnblogs.com/ericli-ericli/p/5917018.html">3. RabbitMQ原理与相关操作(一)(3)</a></li><li><a href="http://www.cnblogs.com/ericli-ericli/p/7268796.html">4. MySql 事务与锁(3)</a></li><li><a href="http://www.cnblogs.com/ericli-ericli/p/7239969.html">5. Ubuntu16.04.2 LTS下使用编译安装程序(使用configure、make、 make install)(2)</a></li></ul></div>
+</div></div></div><div id="sidebar_topdiggedposts" class="sidebar-block"><div id="topdigg_posts_wrap">
+<h3 class="catListTitle">推荐排行榜</h3>
+<div class="RecentComment">
+	<div id="TopDiggPostsBlock"><ul><li><a href="http://www.cnblogs.com/ericli-ericli/p/5917018.html">1. RabbitMQ原理与相关操作(一)(7)</a></li><li><a href="http://www.cnblogs.com/ericli-ericli/p/5924608.html">2. RabbitMQ原理与相关操作(二)(6)</a></li><li><a href="http://www.cnblogs.com/ericli-ericli/p/5902270.html">3. windows下 安装 rabbitMQ 及操作常用命令(5)</a></li><li><a href="http://www.cnblogs.com/ericli-ericli/p/7268796.html">4. MySql 事务与锁(2)</a></li><li><a href="http://www.cnblogs.com/ericli-ericli/p/7267878.html">5. MySql基础知识(1)</a></li></ul></div>
+</div></div></div></div><script type="text/javascript">loadBlogSideColumn();</script>
+    
+</div>
+</div>
+<div class="clear"></div>
+
+<div id="footer">
+	Powered by: 
+	<a id="Footer1_Hyperlink3" name="Hyperlink1" href="http://www.cnblogs.com/" style="font-family:Verdana;font-size:12px;">博客园</a>	Copyright © Eric-Lee
+</div>
+
+
+
+</body></html>

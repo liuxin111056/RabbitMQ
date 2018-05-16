@@ -1,0 +1,15 @@
+1. 配置
+    常规配置如: 数据库, redis, rabbitmq等工具的配置项位于项目根目录下的app.proprties中
+    日志篇日志位于项目根目录下的log4j.properties中
+2. 打包
+    a. 使用eclipse打包
+       如未运行过,需要先运行一次com.sf.heros.mq.consumer.AppMain, 在项目名称上右键选择exprot-->Java-->Runnable Jar file, Launch configuration选择com.sf.heros.mq.consumer.AppMain,
+         Export destination 选择你要导出的位置, Library handling选第二个,  然后Finish
+    b. 使用maven打包
+    进入到项目根目录, 运行命令 mvn clean install, 生成的可执行jar包mq_consumer-0.0.1-SNAPSHOT.jar位于項目根目录下的target中, 它所依赖的jar包及配置文件在同级的lib目录下.
+
+
+3. 启动
+    进入到项目根目录下的target目录下运行nohup java -jar mq_consumer-0.0.1-SNAPSHOT.jar &
+4. 停止
+    运行ps aux|grep mq_consumer-0.0.1-SNAPSHOT.jar, 取的pid后直接kill -9 pid 杀死进程.

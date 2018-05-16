@@ -1,0 +1,8 @@
+eclipse.preferences.version=1
+encoding//src/main/java=GBK
+encoding//src/main/java/com/rabbitmq/fanout/receive/NoticeRequest.java=UTF-8
+encoding//src/main/java/com/rabbitmq/topic/receive/NoticeRequest.java=UTF-8
+encoding//src/main/resources=GBK
+encoding//src/test/java=GBK
+encoding//src/test/resources=GBK
+encoding/<project>=GBK
